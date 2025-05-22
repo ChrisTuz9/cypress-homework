@@ -12,7 +12,7 @@ export function usePasswordValidation({ currentPassword, newPassword, confirmPas
 
     if (touched.currentPassword) {
       newErrors.currentPassword = !currentPassword
-        ? "Current Password is required"
+        ? "The Current Password is required"
         : "";
     }
 
@@ -38,7 +38,7 @@ export function usePasswordValidation({ currentPassword, newPassword, confirmPas
       } else {
         newErrors.confirmPassword = "";
       }
-  }
+    }
     setErrors(newErrors);
   }, [currentPassword, newPassword, confirmPassword, touched]);
 

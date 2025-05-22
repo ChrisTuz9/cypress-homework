@@ -3,6 +3,31 @@ describe('Password change', () => {
     cy.visit('/');
   });
 
+  it('should show error if current password is empty, but untouched', () => {
+    fillPasswordForm({
+      newPass: 'NewPa55word',
+      confirm: 'NewPa55word'
+    })
+
+    isSubmitButttonDisabled();
+  })
+
+  it('should show error if current password is empty, but touched', () => {
+    fillPasswordForm({
+      newPass: 'NewPa55word',
+      confirm: 'NewPa55word'
+    })
+
+    cy.get('[data-cy="current-password-input"]')
+      .focus()
+      .blur();
+
+    getErrorMessageForField('current-password-input')
+      .should('have.text', 'The Current Password is required');
+
+    isSubmitButttonDisabled();
+  })
+
   it('should show error if new password is 7 characters long', () => {
     fillPasswordForm({
       current: 'OldPa55word',
@@ -91,8 +116,10 @@ describe('Password change', () => {
   })
 
   function fillPasswordForm({ current, newPass, confirm}) {
-    cy.get('[data-cy="current-password-input"]')
-      .type(current)
+    if (current !== undefined) {
+      cy.get('[data-cy="current-password-input"]')
+        .type(current)
+    }
     cy.get('[data-cy="new-password-input"]')
       .type(newPass)
     cy.get('[data-cy="confirm-new-password-input"]')
