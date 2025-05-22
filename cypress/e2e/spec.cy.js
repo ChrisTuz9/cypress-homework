@@ -3,7 +3,7 @@ describe('Password change', () => {
     cy.visit('/');
   });
 
-  it('New password 7 characters long', () => {
+  it('should show error if new password is 7 characters long', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPa55',
@@ -14,7 +14,7 @@ describe('Password change', () => {
     isSubmitButttonDisabled()
   })
 
-  it('New password 8 characters long', () => {
+  it('should accept new password with 8 characters', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPa55w',
@@ -24,18 +24,28 @@ describe('Password change', () => {
     submitPasswordForm()
   })
 
-  it('New password 31 characters long', () => {
+  it('should accept new password with 30 characters', () => {
     fillPasswordForm({
       current: 'OldPa55word',
-      newPass: 'NewPa55aaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      confirm: 'NewPa55aaaaaaaaaaaaaaaaaaaaaaaaaaa'
+      newPass: 'NewPa55aaaaaaaaaaaaaaaaaaaaaaa',
+      confirm: 'NewPa55aaaaaaaaaaaaaaaaaaaaaaa'
+    })
+
+    submitPasswordForm()
+  })
+
+  it('should show error if new password is 31 characters long', () => {
+    fillPasswordForm({
+      current: 'OldPa55word',
+      newPass: 'NewPa55aaaaaaaaaaaaaaaaaaaaaaaa',
+      confirm: 'NewPa55aaaaaaaaaaaaaaaaaaaaaaaa'
     })
 
     cy.contains('The New Password must be not longer than 30 characters long')
     isSubmitButttonDisabled()
   })
 
-  it('New password does not contain number', () => {
+  it('should show error if new password does not contain a number', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPassw',
@@ -46,7 +56,7 @@ describe('Password change', () => {
     isSubmitButttonDisabled()
   })
 
-  it('The Confirmation Password does not match', () => {
+  it('should show error if confirmation password does not match new password', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPa55word',
@@ -57,6 +67,22 @@ describe('Password change', () => {
     isSubmitButttonDisabled();
   })
 
+  it('should show success alert after submitting a valid password change', () => {
+    cy.window().then((win) => {
+      cy.stub(win, 'alert').as('alert');
+    });
+
+    fillPasswordForm({
+      current: 'OldPa55word',
+      newPass: 'NewPa55word',
+      confirm: 'NewPa55word'
+    })
+
+    submitPasswordForm()
+
+    cy.get('@alert').should('have.been.calledWith', 'Your password has been successfully changed.');
+  })
+
   function fillPasswordForm({ current, newPass, confirm}) {
     cy.get('[data-cy="current-password-input"]')
       .type(current)
@@ -64,12 +90,12 @@ describe('Password change', () => {
       .type(newPass)
     cy.get('[data-cy="confirm-new-password-input"]')
       .type(confirm)
+      .blur();
   }
 
   function submitPasswordForm() {
     cy.get('[data-cy="submit-button"]')
       .click()
-    cy.contains('Your password has beensuccessfully changed.')
   }
 
   function isSubmitButttonDisabled() {
