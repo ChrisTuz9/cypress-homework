@@ -1,0 +1,7 @@
+.InputField{
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin-bottom: 5px;
+    text-align: left; 
+}
