@@ -3,7 +3,7 @@ describe('Password change', () => {
     cy.visit('/');
   });
 
-  it('New password is 7 characters long', () => {
+  it('should show error if new password is 7 characters long', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPa55',
@@ -14,7 +14,7 @@ describe('Password change', () => {
     isSubmitButttonDisabled()
   })
 
-  it('New password is 8 characters long', () => {
+  it('should accept new password with 8 characters', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPa55w',
@@ -24,7 +24,7 @@ describe('Password change', () => {
     submitPasswordForm()
   })
 
-  it('New password is 30 characters long', () => {
+  it('should accept new password with 30 characters', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPa55aaaaaaaaaaaaaaaaaaaaaaa',
@@ -34,7 +34,7 @@ describe('Password change', () => {
     submitPasswordForm()
   })
 
-  it('New password is 31 characters long', () => {
+  it('should show error if new password is 31 characters long', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPa55aaaaaaaaaaaaaaaaaaaaaaaa',
@@ -45,7 +45,7 @@ describe('Password change', () => {
     isSubmitButttonDisabled()
   })
 
-  it('New password does not contain a number', () => {
+  it('should show error if new password does not contain a number', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPassw',
@@ -56,7 +56,7 @@ describe('Password change', () => {
     isSubmitButttonDisabled()
   })
 
-  it('Confirmation password does not match', () => {
+  it('should show error if confirmation password does not match new password', () => {
     fillPasswordForm({
       current: 'OldPa55word',
       newPass: 'NewPa55word',
@@ -67,7 +67,7 @@ describe('Password change', () => {
     isSubmitButttonDisabled();
   })
 
-  it('Shows a sucess alert after submitting valid password change', () => {
+  it('should show success alert after submitting a valid password change', () => {
     cy.window().then((win) => {
       cy.stub(win, 'alert').as('alert');
     });
