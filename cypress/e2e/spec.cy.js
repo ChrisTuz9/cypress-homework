@@ -3,7 +3,7 @@ describe('Password change', () => {
     cy.visit('/');
   });
 
-  it('should show error if current password is empty, but untouched', () => {
+  it('should disable submit button if current password is empty and untouched', () => {
     fillPasswordForm({
       newPass: 'NewPa55word',
       confirm: 'NewPa55word'
@@ -12,7 +12,7 @@ describe('Password change', () => {
     isSubmitButttonDisabled();
   })
 
-  it('should show error if current password is empty, but touched', () => {
+  it('should show error if current password is empty and touched', () => {
     fillPasswordForm({
       newPass: 'NewPa55word',
       confirm: 'NewPa55word'
@@ -27,6 +27,13 @@ describe('Password change', () => {
 
     isSubmitButttonDisabled();
   })
+
+  it('should disable submit button if new password and confirmation are empty and untouched', () => {
+    cy.get('[data-cy="current-password-input"]')
+        .type('OldPa55word')
+
+    isSubmitButttonDisabled();
+  });
 
   it('should show error if new password is 7 characters long', () => {
     fillPasswordForm({
