@@ -10,7 +10,9 @@ describe('Password change', () => {
       confirm: 'NewPa55'
     })
 
-    cy.contains('The New Password must be at least 8 characters long')
+    getErrorMessageForField('new-password-input')
+      .should('have.text', 'The New Password must be at least 8 characters long')
+      
     isSubmitButttonDisabled()
   })
 
@@ -41,7 +43,9 @@ describe('Password change', () => {
       confirm: 'NewPa55aaaaaaaaaaaaaaaaaaaaaaaa'
     })
 
-    cy.contains('The New Password must be not longer than 30 characters long')
+    getErrorMessageForField('new-password-input')
+      .should('have.text', 'The New Password must be not longer than 30 characters long')
+    
     isSubmitButttonDisabled()
   })
 
@@ -52,7 +56,9 @@ describe('Password change', () => {
       confirm: 'NewPassw'
     })
 
-    cy.contains('The New Password must contain at least one number')
+    getErrorMessageForField('new-password-input')
+      .should('have.text', 'The New Password must contain at least one number')
+    
     isSubmitButttonDisabled()
   })
 
@@ -63,7 +69,8 @@ describe('Password change', () => {
       confirm: 'DifPa55word'
     })
 
-    cy.contains('Passwords do not match')
+    getErrorMessageForField('confirm-new-password-input')
+      .should('have.text', 'Passwords do not match')
     isSubmitButttonDisabled();
   })
 
@@ -91,6 +98,12 @@ describe('Password change', () => {
     cy.get('[data-cy="confirm-new-password-input"]')
       .type(confirm)
       .blur();
+  }
+
+  function getErrorMessageForField(dataCySelector) {
+    return cy.get(`[data-cy="${dataCySelector}"]`)
+      .parent()
+      .find('p');
   }
 
   function submitPasswordForm() {
