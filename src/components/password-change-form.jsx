@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { InputField } from "./input-field";
-import { usePasswordValidation } from "../hooks/usePasswordValidation";
+import { usePasswordValidation } from "../hooks/use-password-validation";
 
 export function PasswordChangeForm() {
     const [newPassword, setNewPassword] = useState("");
@@ -40,11 +40,10 @@ export function PasswordChangeForm() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 onBlur={() => setTouched((prev) => ({ ...prev, currentPassword: true }))}
+                error={errors.currentPassword}
+                touched={touched.currentPassword}
                 data-cy="current-password-input"
             />
-            {touched.currentPassword && errors.currentPassword && (
-               <p style={{ color: "red" }}>{errors.currentPassword}</p>
-            )}
             <InputField
                 label="New password:"
                 type="password"
@@ -52,23 +51,21 @@ export function PasswordChangeForm() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 onBlur={() => setTouched((prev) => ({ ...prev, newPassword: true }))}
+                error={errors.newPassword}
+                touched={touched.newPassword}
                 data-cy="new-password-input"
             />
-            {errors.newPassword && (
-                <p style={{ color: "red" }}>{errors.newPassword}</p>
-           )}
-           <InputField
+            <InputField
                 label="Confirm new password:"
                 type="password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 onBlur={() => setTouched((prev) => ({ ...prev, confirmPassword: true }))}
+                error={errors.confirmPassword}
+                touched={touched.confirmPassword}
                 data-cy="confirm-new-password-input"
             />
-            {errors.confirmPassword && (
-                <p style={{ color: "red" }}>{errors.confirmPassword}</p>
-            )}
 
             <button
                 onClick={handleSubmit}
