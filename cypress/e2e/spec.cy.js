@@ -3,13 +3,53 @@ describe('Password change', () => {
     cy.visit('/');
   });
 
+  it('should show error if current password does not match the user’s password', () => {
+    cy.login('user@example.com', 'OldPa55word');
+
+    fillPasswordForm({
+      current: 'WrongPa55word',
+      newPass: 'NewPa55word',
+      confirm: 'NewPa55word'
+    });
+
+    getErrorMessageForField('current-password-input')
+      .should('have.text', 'The Current Password is incorrect');
+
+    isSubmitButtonDisabled();
+  });
+
+  it('should actually update the password', () => {
+    cy.login('user@example.com', 'OldPa55word');
+
+    fillPasswordForm({
+      current: 'OldPa55word',
+      newPass: 'NewPa55word',
+      confirm: 'NewPa55word'
+    });
+
+    submitPasswordForm();
+
+    cy.request({
+      method: 'POST',
+      url: '/api/login',
+      body: {
+        username: 'user@example.com',
+        password: 'NewPa55word'
+      }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.have.property('token');
+    });
+  });
+
+
   it('should disable submit button if current password is empty and untouched', () => {
     fillPasswordForm({
       newPass: 'NewPa55word',
       confirm: 'NewPa55word'
     })
 
-    isSubmitButttonDisabled();
+    isSubmitButtonDisabled();
   })
 
   it('should show error if current password is empty and touched', () => {
@@ -25,14 +65,14 @@ describe('Password change', () => {
     getErrorMessageForField('current-password-input')
       .should('have.text', 'The Current Password is required');
 
-    isSubmitButttonDisabled();
+    isSubmitButtonDisabled();
   })
 
   it('should disable submit button if new password and confirmation are empty and untouched', () => {
     cy.get('[data-cy="current-password-input"]')
         .type('OldPa55word')
 
-    isSubmitButttonDisabled();
+    isSubmitButtonDisabled();
   });
 
   it('should show error if new password is 7 characters long', () => {
@@ -45,7 +85,7 @@ describe('Password change', () => {
     getErrorMessageForField('new-password-input')
       .should('have.text', 'The New Password must be at least 8 characters long')
       
-    isSubmitButttonDisabled()
+    isSubmitButtonDisabled()
   })
 
   it('should accept new password with 8 characters', () => {
@@ -78,7 +118,7 @@ describe('Password change', () => {
     getErrorMessageForField('new-password-input')
       .should('have.text', 'The New Password must be not longer than 30 characters long')
     
-    isSubmitButttonDisabled()
+    isSubmitButtonDisabled()
   })
 
   it('should show error if new password does not contain a number', () => {
@@ -91,7 +131,7 @@ describe('Password change', () => {
     getErrorMessageForField('new-password-input')
       .should('have.text', 'The New Password must contain at least one number')
     
-    isSubmitButttonDisabled()
+    isSubmitButtonDisabled()
   })
 
   it('should show error if confirmation password does not match new password', () => {
@@ -103,7 +143,7 @@ describe('Password change', () => {
 
     getErrorMessageForField('confirm-new-password-input')
       .should('have.text', 'Passwords do not match')
-    isSubmitButttonDisabled();
+    isSubmitButtonDisabled();
   })
 
   it('should show success alert after submitting a valid password change', () => {
@@ -145,7 +185,7 @@ describe('Password change', () => {
       .click()
   }
 
-  function isSubmitButttonDisabled() {
+  function isSubmitButtonDisabled() {
     cy.get('[data-cy="submit-button"]')
       .should('be.disabled');
   }
